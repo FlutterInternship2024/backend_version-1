@@ -41,7 +41,7 @@ class TAnimationLoaderWidget extends StatelessWidget {
           ),
           showAction
               ? SizedBox(
-                  width: 250,
+                  width: 200,
                   child: OutlinedButton(
                     onPressed: onActionPressed,
                     child: Text(

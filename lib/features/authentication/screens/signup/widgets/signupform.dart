@@ -54,20 +54,6 @@ class SignupForm extends StatelessWidget {
               height: TSizes.spaceBtwInputFields,
             ),
 
-            //UserName
-            TextFormField(
-              controller: controller.username,
-              expands: false,
-              decoration: const InputDecoration(
-                  labelText: TTexts.username,
-                  prefixIcon: Icon(Iconsax.user_edit)),
-              validator: (value) =>
-                  TValidator.validateEmptyText('User Name', value),
-            ),
-            const SizedBox(
-              height: TSizes.spaceBtwInputFields,
-            ),
-
             // Email
             TextFormField(
                 controller: controller.email,

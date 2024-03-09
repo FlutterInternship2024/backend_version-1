@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:internshipapp/data/repositories/authentication_repo.dart';
 import 'package:internshipapp/data/repositories/user_repo.dart';
+import 'package:internshipapp/features/authentication/screens/signup/email_verification.dart';
 import 'package:internshipapp/features/personalization/models/user_model.dart';
 import 'package:internshipapp/utils/helpers/network_manager.dart';
 
@@ -25,7 +26,7 @@ class SignupController extends GetxController {
     try {
       //Start Loading
       TFullScreenLoader.openLoadingDialog(
-          'We are processing your information ...', TImages.acerlogo);
+          'We are processing your information ...', TImages.docerAnimation);
 
       //Check Internet
       final isConnected = await NetworkManager.instance.isConnected();
@@ -43,27 +44,30 @@ class SignupController extends GetxController {
             title: 'Accept Priacy Policy',
             message:
                 'In order to create an account accept the privacy policy & terms of use');
+      } else {
+        // Authentication
+        final userCredentials = await AuthenticationRepository.instance
+            .registerWithEmailAndPassword(
+                email.text.trim(), password.text.trim());
+
+        final newUser = UserModel(
+            id: userCredentials.user!.uid,
+            firstName: firstName.text.trim(),
+            lastName: lastName.text.trim(),
+            email: email.text.trim(),
+            phoneNumber: phoneNumber.text.trim(),
+            profilePicture: '');
+
+        final userRepository = Get.put(UserRepository());
+        userRepository.saveUserRecord(newUser);
+        // Show Success Message
+        TLoaders.successSnackBar(
+            title: 'SignUp !!', message: 'Your account has been created! ');
+        // Move to Verify Email
+        Get.to(() => VerifyEmailScreen(
+              email: email.text.trim(),
+            ));
       }
-
-      // Authentication
-      final userCredentials = await AuthenticationRepository.instance
-          .registerWithEmailAndPassword(
-              email.text.trim(), password.text.trim());
-
-      final newUser = UserModel(
-          id: userCredentials.user!.uid,
-          firstName: firstName.text.trim(),
-          lastName: lastName.text.trim(),
-          username: username.text.trim(),
-          email: email.text.trim(),
-          phoneNumber: phoneNumber.text.trim(),
-          profilePicture: '');
-
-      final userRepository = Get.put(UserRepository());
-      userRepository.saveUserRecord(newUser);
-      // Show Success Message
-      TLoaders.successSnackBar(
-          title: 'SignUp!!', message: 'Your account has been created! ');
 
       //Move to Verify Email Screen
     } catch (e) {
